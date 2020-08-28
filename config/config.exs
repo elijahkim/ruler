@@ -6,6 +6,7 @@
 
 # General application configuration
 use Mix.Config
+alias Rule.Rules.{Rule, Command}
 
 config :ruler,
   ecto_repos: [Ruler.Repo]
@@ -25,6 +26,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :ruler, Ruler.Repo, migration_primary_key: [name: :id, type: :binary_id]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
