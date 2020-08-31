@@ -1,0 +1,44 @@
+<h1>Create a rule</h1>
+<%= f = form_for @changeset, "#", [phx_change: :validate, phx_submit: :save] %>
+  <%= label f, :given %>
+  <%= select f, :given, @given_options %>
+
+  <%= label f, :property %>
+  <%= select f, :property, @property_options %>
+
+  <%= label f, :operator %>
+  <%= select f, :operator, @operator_options %>
+
+  <div>
+    <%= label f, :value, "Value" %>
+    <%= case @selected_type do
+      :string ->
+        text_input f, :value
+
+      :integer ->
+        number_input f, :value
+
+      :date ->
+        date_input f, :value
+
+      :naive_datetime ->
+        date_input f, :value
+
+      :boolean ->
+        select f, :value, [True: true, False: false]
+    end %>
+  </div>
+
+  <h3>Do</h3>
+  <%= for command_form <- inputs_for(f, :command) do %>
+    <%= label command_form, :operation %>
+    <%= select command_form, :operation, @operation_options %>
+
+    <%= label command_form, :value %>
+    <%= text_input command_form, :value %>
+  <% end %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+</form>

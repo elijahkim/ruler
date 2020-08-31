@@ -1,39 +1,35 @@
 defmodule RulerWeb.PageLive do
   use RulerWeb, :live_view
+  alias Ruler.Rows
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    rows = Rows.list_rows()
+
+    {:ok, assign(socket, rows: rows)}
   end
 
   @impl true
-  def handle_event("suggest", %{"q" => query}, socket) do
-    {:noreply, assign(socket, results: search(query), query: query)}
+  def handle_event("navigate_to_new_row", _params, socket) do
+    {:noreply, push_redirect(socket, to: Routes.live_path(socket, RulerWeb.NewRowLive))}
   end
 
   @impl true
-  def handle_event("search", %{"q" => query}, socket) do
-    case search(query) do
-      %{^query => vsn} ->
-        {:noreply, redirect(socket, external: "https://hexdocs.pm/#{query}/#{vsn}")}
-
-      _ ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "No dependencies found matching \"#{query}\"")
-         |> assign(results: %{}, query: query)}
-    end
+  def handle_event("navigate_to_rules", _params, socket) do
+    {:noreply, push_redirect(socket, to: Routes.live_path(socket, RulerWeb.RulesLive))}
   end
 
-  defp search(query) do
-    if not RulerWeb.Endpoint.config(:code_reloader) do
-      raise "action disabled when not in development"
-    end
+  @impl true
+  def handle_event("navigate_to_rule_create", _params, socket) do
+    {:noreply, push_redirect(socket, to: Routes.live_path(socket, RulerWeb.CreateRuleLive))}
+  end
 
-    for {app, desc, vsn} <- Application.started_applications(),
-        app = to_string(app),
-        String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
-        into: %{},
-        do: {app, vsn}
+  def format_date(date) do
+    "#{date.month}/#{date.day}/#{date.year}"
+  end
+
+  def format_money(money) do
+    Money.new(money * 100, :USD)
+    |> Money.to_string()
   end
 end

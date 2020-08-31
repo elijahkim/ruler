@@ -12,5 +12,26 @@ defmodule Ruler.Repo.Migrations.CreateRows do
 
       timestamps()
     end
+
+    create table(:commands) do
+      add(:operation, :binary)
+      add(:value, :integer)
+      add(:rule_id, :uuid)
+
+      timestamps()
+    end
+
+    create table(:rules) do
+      add(:given, :binary)
+      add(:property, :binary)
+      add(:operator, :binary)
+      add(:value, :binary)
+      add(:command_id, references(:commands))
+
+      timestamps()
+    end
+
+    create(index(:rules, [:command_id]))
+    create(index(:commands, [:rule_id]))
   end
 end

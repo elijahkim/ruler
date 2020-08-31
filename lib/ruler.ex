@@ -8,22 +8,46 @@ defmodule Ruler do
   """
 
   alias Ruler.Rules.{Rule, Command}
+  alias Ruler.{Rules, Rows}
+
+  def reindex() do
+    rules = Rules.list_rules()
+
+    Rows.list_rows()
+    |> Task.async_stream(fn row -> Rows.set_weight(row, rules) end)
+    |> Stream.run()
+  end
 
   def apply(item, rules) do
     Enum.reduce(rules, 0, fn rule, weight ->
-      if apply(__MODULE__, rule.operator, [Map.get(item, rule.property), rule.value]) do
-        apply(__MODULE__, rule.command.operator, [weight, rule.command.value])
+      operator = rule.operator
+      property = rule.property
+
+      if apply(__MODULE__, operator, [Map.get(item, property), rule.value]) do
+        operation = rule.command.operation
+
+        apply(__MODULE__, operation, [weight, rule.command.value])
       else
         weight + 0
       end
     end)
   end
 
+  def equals(%type{} = date1, date2) when type in [Date, NaiveDateTime, DateTime] do
+    type.compare(date1, date2) == :eq
+  end
+
   def equals(a, b), do: a === b
 
-  def greater_than(nil, _), do: false
+  def greater_than(%type{} = date1, date2) when type in [Date, NaiveDateTime, DateTime] do
+    type.compare(date1, date2) == :gt
+  end
 
   def greater_than(a, b), do: a > b
+
+  def less_than(%type{} = date1, date2) when type in [Date, NaiveDateTime, DateTime] do
+    type.compare(date1, date2) == :lt
+  end
 
   def less_than(nil, _), do: false
 

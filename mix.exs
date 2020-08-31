@@ -5,7 +5,7 @@ defmodule Ruler.MixProject do
     [
       app: :ruler,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -46,7 +46,10 @@ defmodule Ruler.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ex_machina, "~> 2.4"},
+      {:faker, "~> 0.14"},
+      {:money, "~> 1.7.0"}
     ]
   end
 

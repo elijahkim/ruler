@@ -1,48 +1,38 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
+<div>
+  <a phx-click="navigate_to_new_row">Create Row</a>
+</div>
 
-  <form phx-change="suggest" phx-submit="search">
-    <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
-    <datalist id="results">
-      <%= for {app, _vsn} <- @results do %>
-        <option value="<%= app %>"><%= app %></option>
-      <% end %>
-    </datalist>
-    <button type="submit" phx-disable-with="Searching...">Go to Hexdocs</button>
-  </form>
-</section>
+<div>
+  <a phx-click="navigate_to_rules">Rules</a>
+</div>
+
+<div>
+  <a phx-click="navigate_to_rule_create">Create a Rule</a>
+</div>
 
 <section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
+  <table>
+    <thead>
+      <tr>
+        <th>Weight</th>
+        <th>Name</th>
+        <th>Birthday</th>
+        <th>Income</th>
+        <th>Live In</th>
+        <th>Work In</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for r <- @rows do %>
+        <tr>
+          <td><%= r.weight %></td>
+          <td><%= r.name %></td>
+          <td><%= format_date(r.birthday) %></td>
+          <td><%= format_money(r.income) %></td>
+          <td><%= r.live_in %></td>
+          <td><%= r.work_in %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </section>

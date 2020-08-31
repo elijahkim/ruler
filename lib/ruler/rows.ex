@@ -1,6 +1,15 @@
 defmodule Ruler.Rows do
-  alias Ruler.Repo
+  alias Ruler.{Repo, Rules}
   alias Ruler.Rows.Schema.Row
+  import Ecto.Query
+
+  def list_rows() do
+    from(
+      r in Row,
+      order_by: [desc_nulls_last: :weight, asc: :inserted_at]
+    )
+    |> Repo.all()
+  end
 
   def create_row(params) do
     params
@@ -9,8 +18,8 @@ defmodule Ruler.Rows do
     |> notify(:create_rule)
   end
 
-  defp set_weight(row) do
-    weight = Ruler.apply(row, Ruler.rules())
+  def set_weight(row, rules) do
+    weight = Ruler.apply(row, rules)
 
     row
     |> Row.update_weight_changeset(%{weight: weight})
@@ -18,7 +27,9 @@ defmodule Ruler.Rows do
   end
 
   defp notify({:ok, row}, :create_rule) do
-    set_weight(row)
+    rules = Rules.list_rules()
+
+    set_weight(row, rules)
   end
 
   defp notify({:error, reason}, :create_rule), do: {:ok, reason}

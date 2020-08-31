@@ -18,6 +18,9 @@ defmodule RulerWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+    live "/rows/new", NewRowLive
+    live "/rules/new", CreateRuleLive
+    live "/rules", RulesLive
   end
 
   # Other scopes may use custom stacks.
